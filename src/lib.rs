@@ -1,3 +1,5 @@
+#![recursion_limit = "256"]
+
 extern crate wasm_bindgen;
 extern crate yew;
 

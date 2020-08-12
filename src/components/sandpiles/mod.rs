@@ -1,3 +1,8 @@
+mod cell;
+mod sim;
+
+use cell::Cell;
+
 use std::convert::{TryFrom, TryInto};
 use std::time::Duration;
 use wasm_bindgen::{JsCast, JsValue};
@@ -10,6 +15,8 @@ pub struct Sandpiles {
     link:       ComponentLink<Self>,
     canvas_ref: NodeRef,
     tick_job:   Box<dyn Task>,
+
+    cell_grid: sim::CellGrid,
 }
 
 #[derive(Properties, Clone, PartialEq)]
@@ -58,27 +65,31 @@ impl Component for Sandpiles {
             link,
             canvas_ref: NodeRef::default(),
             tick_job: Box::new(handle),
+            cell_grid: Default::default(),
         }
     }
 
-    fn rendered(&mut self, first_render: bool) {
-        if first_render {
-            if let Some(ctx) = self.get_context() {
-                ctx.set_fill_style(&JsValue::from("#fff"));
-                ctx.fill_rect(0.0, 0.0, 300.0, 300.0);
-            }
-        }
-    }
+    // fn rendered(&mut self, first_render: bool) {
+    //     if first_render {
+    //         if let Some(ctx) = self.get_context() {
+    //             ctx.set_fill_style(&JsValue::from("#fff"));
+    //             ctx.fill_rect(0.0, 0.0, 300.0, 300.0);
+    //         }
+    //     }
+    // }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
             Msg::Tick => {
-                if let Some(ctx) = self.get_context() {
-                    console::log_1(&JsValue::from("TICK"))
-                }
+                let center_cell = self
+                    .cell_grid
+                    .0
+                    .entry(sim::Pos { x: 0, y: 0 })
+                    .or_insert_with(Default::default);
+                center_cell.value += 1;
             }
         }
-        false
+        true
     }
 
     fn change(&mut self, props: Self::Properties) -> ShouldRender {
@@ -104,18 +115,41 @@ impl Component for Sandpiles {
                     self.props.height,
                 )
             >
-                <canvas
-                    ref=self.canvas_ref.clone()
+                <div
                     class=(
+                        "relative",
+                        "flex",
+                        "justify-center",
+                        "items-center",
                         "block",
                         "bg-black",
                         "w-full",
                         "h-full",
                     )
-                    width=self.props.width,
-                    height=self.props.height,
                 >
-                </canvas>
+                    {
+                        for self
+                            .cell_grid
+                            .0
+                            .iter()
+                            .map(|(pos, cell)| html! {
+                                <Cell x=pos.x y=pos.y value=cell.value />
+                            })
+                    }
+                </div>
+
+                // <canvas
+                //     ref=self.canvas_ref.clone()
+                //     class=(
+                //         "block",
+                //         "bg-black",
+                //         "w-full",
+                //         "h-full",
+                //     )
+                //     width=self.props.width,
+                //     height=self.props.height,
+                // >
+                // </canvas>
             </div>
         }
     }
