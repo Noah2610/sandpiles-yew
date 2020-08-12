@@ -4,7 +4,6 @@ extern crate yew;
 mod app;
 mod components;
 mod props;
-mod sandpiles;
 
 use wasm_bindgen::prelude::*;
 

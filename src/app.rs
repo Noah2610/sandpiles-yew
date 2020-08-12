@@ -1,4 +1,4 @@
-use crate::components::{Heading, Page};
+use crate::components::{Heading, Page, Sandpiles};
 use crate::props;
 use yew::prelude::*;
 
@@ -26,11 +26,9 @@ impl Component for App {
         html! {
             <Page>
                 <Heading size=props::Size::Xl>
-                    { "Hello World!" }
+                    { "Sandpiles" }
                 </Heading>
-                <div class=("h-16", "bg-black")>
-                    { "Tailwind?" }
-                </div>
+                <Sandpiles />
             </Page>
         }
     }

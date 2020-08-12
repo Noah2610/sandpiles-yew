@@ -9,7 +9,11 @@ crate-type = ["cdylib"]
 
 [dependencies]
 wasm-bindgen = "0.2.67"
-yew = "0.17.2"
+
+[dependencies.yew]
+version = "0.17.2"
+git = "https://github.com/Noah2610/yew"
+branch = "custom"
 
 [dev-dependencies]
 wasm-pack = "0.9.1"

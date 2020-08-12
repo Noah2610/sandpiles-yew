@@ -15,8 +15,8 @@ pub struct Props {
 pub enum Msg {}
 
 impl Component for Heading {
-    type Message = Msg;
     type Properties = Props;
+    type Message = Msg;
 
     fn create(props: Self::Properties, _: ComponentLink<Self>) -> Self {
         Self { props }
@@ -26,8 +26,13 @@ impl Component for Heading {
         true
     }
 
-    fn change(&mut self, new_props: Self::Properties) -> ShouldRender {
-        self.props != new_props
+    fn change(&mut self, props: Self::Properties) -> ShouldRender {
+        if self.props != props {
+            self.props = props;
+            true
+        } else {
+            false
+        }
     }
 
     fn view(&self) -> Html {
