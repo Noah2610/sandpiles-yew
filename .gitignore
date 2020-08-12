@@ -1,0 +1,13 @@
+# RUST
+/target
+
+# LOGS
+log/
+*.log
+
+# JS
+/node_modules/
+
+# BUILD
+/dist/
+/pkg/
