@@ -1,3 +1,5 @@
+use crate::components::{Heading, Page};
+use crate::props;
 use yew::prelude::*;
 
 pub struct App {}
@@ -22,16 +24,14 @@ impl Component for App {
 
     fn view(&self) -> Html {
         html! {
-            <div class="absolute top-0 bottom-0 left-0 right-0 flex justify-center bg-gray-900 text-gray-200">
-                <div class="container px-8 py-4">
-                    <h1>
-                        { "Hello World!" }
-                    </h1>
-                    <div class=("h-16", "bg-black")>
-                        { "Tailwind?" }
-                    </div>
+            <Page>
+                <Heading size=props::Size::Xl>
+                    { "Hello World!" }
+                </Heading>
+                <div class=("h-16", "bg-black")>
+                    { "Tailwind?" }
                 </div>
-            </div>
+            </Page>
         }
     }
 }
