@@ -15,6 +15,7 @@ pub struct Sandpiles {
     link:       ComponentLink<Self>,
     canvas_ref: NodeRef,
     tick_job:   Box<dyn Task>,
+    render_job: Box<dyn Task>,
 
     cell_grid: sim::CellGrid,
 }
@@ -22,15 +23,18 @@ pub struct Sandpiles {
 #[derive(Properties, Clone, PartialEq)]
 pub struct Props {
     #[prop_or(600)]
-    pub width:            u32,
+    pub width:              u32,
     #[prop_or(600)]
-    pub height:           u32,
+    pub height:             u32,
     #[prop_or(500)]
-    pub tick_interval_ms: u64,
+    pub tick_interval_ms:   u64,
+    #[prop_or(500)]
+    pub render_interval_ms: u64,
 }
 
 pub enum Msg {
     Tick,
+    Render,
 }
 
 impl Sandpiles {
@@ -54,17 +58,21 @@ impl Component for Sandpiles {
     type Message = Msg;
 
     fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        let callback = link.callback(|_| Msg::Tick);
-        let handle = IntervalService::spawn(
+        let handle_tick = IntervalService::spawn(
             Duration::from_millis(props.tick_interval_ms),
-            callback,
+            link.callback(|_| Msg::Tick),
+        );
+        let handle_render = IntervalService::spawn(
+            Duration::from_millis(props.render_interval_ms),
+            link.callback(|_| Msg::Render),
         );
 
         Self {
             props,
             link,
             canvas_ref: NodeRef::default(),
-            tick_job: Box::new(handle),
+            tick_job: Box::new(handle_tick),
+            render_job: Box::new(handle_render),
             cell_grid: Default::default(),
         }
     }
@@ -89,9 +97,11 @@ impl Component for Sandpiles {
                 center_cell.value += 1;
 
                 sim::step(&mut self.cell_grid);
+
+                false
             }
+            Msg::Render => true,
         }
-        true
     }
 
     fn change(&mut self, props: Self::Properties) -> ShouldRender {
