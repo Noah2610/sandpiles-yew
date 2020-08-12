@@ -1,4 +1,4 @@
 #[derive(Default)]
 pub struct Cell {
-    pub value: u32,
+    pub value: i32,
 }

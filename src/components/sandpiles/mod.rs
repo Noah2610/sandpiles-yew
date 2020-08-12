@@ -87,6 +87,8 @@ impl Component for Sandpiles {
                     .entry(sim::Pos { x: 0, y: 0 })
                     .or_insert_with(Default::default);
                 center_cell.value += 1;
+
+                sim::step(&mut self.cell_grid);
             }
         }
         true

@@ -28,7 +28,7 @@ impl Component for App {
                 <Heading size=props::Size::Xl>
                     { "Sandpiles" }
                 </Heading>
-                <Sandpiles />
+                <Sandpiles tick_interval_ms=10 />
             </Page>
         }
     }

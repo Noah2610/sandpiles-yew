@@ -1,6 +1,6 @@
 use yew::prelude::*;
 
-const CELL_SIZE: (i32, i32) = (8, 8);
+const CELL_SIZE: (i32, i32) = (16, 16);
 
 pub struct Cell {
     props: Props,
@@ -8,7 +8,7 @@ pub struct Cell {
 
 #[derive(Properties, Clone, PartialEq)]
 pub struct Props {
-    pub value: u32,
+    pub value: i32,
     pub x:     i32,
     pub y:     i32,
 }
@@ -44,11 +44,11 @@ impl Component for Cell {
                     "absolute",
                     "bg-red-900",
                     &format!("bg-opacity-{}", match self.props.value {
-                        0 => "0",
+                        i32::MIN ..= 0 => "0",
                         1 => "25",
                         2 => "50",
                         3 => "75",
-                        4 ..= u32::MAX => "100",
+                        4 ..= i32::MAX => "100",
                     }),
                 )
                 style=format!(
