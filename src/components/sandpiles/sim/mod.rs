@@ -12,7 +12,7 @@ pub struct Pos {
     pub y: i32,
 }
 
-pub fn step(grid: &mut CellGrid, alternate: bool) {
+pub fn step(grid: &mut CellGrid, alternate: &mut usize) {
     let mut value_additions: HashMap<Pos, i32> = HashMap::new();
 
     for (pos, cell) in grid.0.iter() {
@@ -39,7 +39,7 @@ pub fn step(grid: &mut CellGrid, alternate: bool) {
     }
 }
 
-fn neighboring_positions_for(target: &Pos, alternate: bool) -> Vec<Pos> {
+fn neighboring_positions_for(target: &Pos, alternate: &mut usize) -> Vec<Pos> {
     const CORNERS: [(i32, i32); 4] = [(-1, -1), (-1, 1), (1, -1), (1, 1)];
     const ADJACENT_4: [(i32, i32); 4] = [(-1, 0), (1, 0), (0, -1), (0, 1)];
     const ADJACENT_8: [(i32, i32); 8] = [
@@ -54,11 +54,13 @@ fn neighboring_positions_for(target: &Pos, alternate: bool) -> Vec<Pos> {
     ];
     const ALTERNATING_2: [[(i32, i32); 2]; 2] =
         [[(-1, -1), (1, 1)], [(-1, 1), (1, -1)]];
+    const ALTERNATING_4: [[(i32, i32); 1]; 4] =
+        [[(-1, -1)], [(-1, 1)], [(1, 1)], [(1, -1)]];
 
-    let alternate_idx = if alternate { 0 } else { 1 };
+    *alternate = *alternate % 4;
 
     // CORNERS
-    ALTERNATING_2[alternate_idx]
+    ADJACENT_4
         .into_iter()
         .map(|(x, y)| Pos {
             x: target.x + x,

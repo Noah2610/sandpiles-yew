@@ -19,7 +19,7 @@ pub struct Sandpiles {
 
     cell_grid: sim::CellGrid,
 
-    cell_alternate: bool,
+    cell_alternate: usize,
 }
 
 #[derive(Properties, Clone, PartialEq)]
@@ -76,7 +76,7 @@ impl Component for Sandpiles {
             tick_job: Box::new(handle_tick),
             render_job: Box::new(handle_render),
             cell_grid: Default::default(),
-            cell_alternate: false,
+            cell_alternate: 0,
         }
     }
 
@@ -99,9 +99,9 @@ impl Component for Sandpiles {
                     .or_insert_with(Default::default);
                 center_cell.value += 1;
 
-                sim::step(&mut self.cell_grid, self.cell_alternate);
+                sim::step(&mut self.cell_grid, &mut self.cell_alternate);
 
-                self.cell_alternate = !self.cell_alternate;
+                self.cell_alternate += 1;
 
                 false
             }
